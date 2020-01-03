@@ -1,0 +1,13 @@
+{
+    "name": "sherbet-agency/php-nope",
+    "description": "A light-weight tool for parsing log files in real-time and blocking requests that match certain pattern you define",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aran Reeks",
+            "email": "aran.reeks@sherbet.agency"
+        }
+    ],
+    "require": {}
+}
