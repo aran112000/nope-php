@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+
+    <file>.</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <rule ref="PSR12"/>
+
+    <arg name="basepath" value="."/>
+    <arg name="parallel" value="75"/>
+    <arg value="np"/>
+
+    <config name="php_version" value="50602"/>
+    <config name="encoding" value="UTF-8"/>
+    <config name="default_standard" value="PSR12"/>
+
+</ruleset>

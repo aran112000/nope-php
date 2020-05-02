@@ -1,13 +1,24 @@
 {
-    "name": "sherbet-agency/php-nope",
+    "name": "aran112000/phpnope",
     "description": "A light-weight tool for parsing log files in real-time and blocking requests that match certain pattern you define",
     "type": "project",
     "license": "MIT",
     "authors": [
         {
             "name": "Aran Reeks",
-            "email": "aran.reeks@sherbet.agency"
+            "email": "me@aran.me.uk"
         }
     ],
-    "require": {}
+    "require": {
+      "php": ">=5.6.0",
+      "ext-redis": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
 }
