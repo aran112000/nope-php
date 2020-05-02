@@ -2,9 +2,8 @@
 
 namespace App\Rules;
 
-use App\Config\IpAddress;
-use App\ConsoleColour;
 use App\Exceptions\AbuseException;
+use App\Helpers\ConsoleColour;
 
 /**
  * Class BlockNonWordpress
@@ -32,7 +31,7 @@ class BlockNonWordpress extends Rule
 
         if ($this->isWordpressWebsite()) {
             // This is actually a Wordpress website on this server, so allow
-            $this->outputDebug($this->logLine->getHost() . ' is a Wordpress website, allowing', ConsoleColour::TEXT_GREEN);
+            $this->log($this->logLine->getHost() . ' is a Wordpress website, allowing', ConsoleColour::TEXT_GREEN);
 
             return;
         }

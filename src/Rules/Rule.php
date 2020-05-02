@@ -2,9 +2,7 @@
 
 namespace App\Rules;
 
-use App\Config\IpAddress;
-use App\Config\UserAgent;
-use App\ConsoleColour;
+use App\Helpers\Log;
 use App\LogLine;
 
 /**
@@ -26,33 +24,6 @@ abstract class Rule
     abstract public function run();
 
     /**
-     * Default entry point for running all rules
-     *
-     * Don't extend this, this is internally a parent method to
-     * prevent blocking any whitelisted IPs accidentally
-     *
-     * @throws \App\Exceptions\AbuseException
-     */
-    public function exec()
-    {
-        if ($ipDescription = IpAddress::isTrusted($this->logLine->getIp())) {
-            // This is a whitelisted IP, skip any rules
-            $this->outputDebug('Skipping due to whitelisted IP: ' . $ipDescription, ConsoleColour::TEXT_GREEN);
-
-            return;
-        }
-
-        if ($botName = UserAgent::isTrusted($this->logLine->getUserAgent())) {
-            // This is a whitelisted user agent, skip any rules
-            $this->outputDebug('Skipping due to whitelisted user agent: ' . $botName, ConsoleColour::TEXT_GREEN);
-
-            return;
-        }
-
-        $this->run();
-    }
-
-    /**
      * @param LogLine $logLine
      */
     public function setLogLine(LogLine $logLine)
@@ -68,7 +39,7 @@ abstract class Rule
         $host = $this->logLine->getHost();
 
         if (!$host) {
-            $this->outputDebug('Unable to determine the host from the logs');
+            $this->log('Unable to determine the host from the logs');
 
             return false;
         }
@@ -82,7 +53,7 @@ abstract class Rule
         ]);
 
         if (!is_dir($vhostDirectory)) {
-            $this->outputDebug('Unable to locate vhost directory for ' . str_replace('www.', '', $host));
+            $this->log('Unable to locate vhost directory for ' . str_replace('www.', '', $host));
 
             return false;
         }
@@ -94,24 +65,14 @@ abstract class Rule
      * @param string       $message
      * @param null|string  $colour   - Constant from App\ConsoleColour
      */
-    protected function outputDebug($message, $colour = null)
+    protected function log($message, $colour = null)
     {
-        if (!DEBUG_MODE) {
-            return;
-        }
-
-        $time = date('d/m/Y H:i:s');
-
         // Get a friendly rule name from camelCase class names
         $classParts = explode('\\', get_called_class());
         $friendlyRuleName = ucfirst(strtolower(trim(preg_replace('#([A-Z])#', ' $1', end($classParts)))));
 
-        if ($colour === null) {
-            echo "[$time] $friendlyRuleName: $message\n";
+        $message = $friendlyRuleName . ': ' . $message;
 
-            return;
-        }
-
-        echo "[$time] $friendlyRuleName: \033[" . $colour . "m$message\033[0m\n";
+        Log::write($message, $colour);
     }
 }

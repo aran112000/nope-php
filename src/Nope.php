@@ -2,7 +2,11 @@
 
 namespace App;
 
+use App\Config\IpAddress;
+use App\Config\UserAgent;
 use App\Exceptions\AbuseException;
+use App\Helpers\ConsoleColour;
+use App\Helpers\Log;
 use App\Rules\Rule;
 
 /**
@@ -36,6 +40,11 @@ class Nope
             $logLine = clone $baseLogLine;
             $logLine->setLogLine(fgets($this->logHandle, 5000));
 
+            if ($this->isWhitelistedRequest($logLine)) {
+                // Whitelisted so don't try and process
+                continue;
+            }
+
             foreach ($rules() as $rule) {
                 if (!$this->triggerRule($rule, $logLine)) {
                     break;
@@ -59,7 +68,7 @@ class Nope
         $rule->setLogLine($logLine);
 
         try {
-            $rule->exec();
+            $rule->run();
         } catch (AbuseException $e) {
             $this->addToIpTables();
 
@@ -87,5 +96,29 @@ class Nope
         if ($this->logHandle !== null) {
             pclose($this->logHandle);
         }
+    }
+
+    /**
+     * @param LogLine $logLine
+     *
+     * @return bool
+     */
+    protected function isWhitelistedRequest(LogLine $logLine)
+    {
+        if ($ipDescription = IpAddress::isTrusted($logLine->getIp())) {
+            // This is a whitelisted IP, skip any rules
+            Log::write('Skipping due to whitelisted IP: ' . $ipDescription, ConsoleColour::TEXT_GREEN);
+
+            return true;
+        }
+
+        if ($botName = UserAgent::isTrusted($logLine->getUserAgent())) {
+            // This is a whitelisted user agent, skip any rules
+            Log::write('Skipping due to whitelisted user agent: ' . $botName, ConsoleColour::TEXT_GREEN);
+
+            return true;
+        }
+
+        return false;
     }
 }

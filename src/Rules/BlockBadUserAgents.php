@@ -2,9 +2,8 @@
 
 namespace App\Rules;
 
-use App\Config\IpAddress;
-use App\ConsoleColour;
 use App\Exceptions\AbuseException;
+use App\Helpers\ConsoleColour;
 
 /**
  * Class BlockBadUserAgents
@@ -38,7 +37,7 @@ class BlockBadUserAgents extends Rule
         if ($botName = $this->isBadBot()) {
             $message = 'Blocking blacklisted bot (' . $this->logLine->getUserAgent() . ') for matching rule: "' . $botName . '" - ' . $this->logLine->getIp();
 
-            $this->outputDebug($message, ConsoleColour::TEXT_RED);
+            $this->log($message, ConsoleColour::TEXT_RED);
 
             throw new AbuseException($message);
         }
