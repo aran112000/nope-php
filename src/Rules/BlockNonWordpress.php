@@ -32,12 +32,12 @@ class BlockNonWordpress extends Rule
 
         if ($this->isWordpressWebsite()) {
             // This is actually a Wordpress website on this server, so allow
-            $this->outputDebug($this->getHost() . ' is a Wordpress website, allowing', ConsoleColour::TEXT_GREEN);
+            $this->outputDebug($this->logLine->getHost() . ' is a Wordpress website, allowing', ConsoleColour::TEXT_GREEN);
 
             return;
         }
 
-        throw new AbuseException($this->getHost() . ' is not a Wordpress website');
+        throw new AbuseException($this->logLine->getHost() . ' is not a Wordpress website');
     }
 
     /**
@@ -57,7 +57,7 @@ class BlockNonWordpress extends Rule
 
     protected function isWordpressRequest()
     {
-        $uri = $this->getUri();
+        $uri = $this->logLine->getUri();
 
         if (stristr($uri, '/wp-admin')) {
             return true;

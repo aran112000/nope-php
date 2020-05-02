@@ -3,21 +3,22 @@
 namespace App\Rules;
 
 use App\Config\IpAddress;
+use App\Config\UserAgent;
 use App\ConsoleColour;
-use App\RequestDetails;
+use App\LogLine;
 
 /**
  * Class Rule
  *
  * @package App
  */
-abstract class Rule extends RequestDetails
+abstract class Rule
 {
 
     /**
-     * @var string
+     * @var LogLine
      */
-    private $logLine;
+    protected $logLine;
 
     /**
      * @throws \App\Exceptions\AbuseException
@@ -28,14 +29,22 @@ abstract class Rule extends RequestDetails
      * Default entry point for running all rules
      *
      * Don't extend this, this is internally a parent method to
-     * prevent blocking any whitelisted IPs accitentally
+     * prevent blocking any whitelisted IPs accidentally
      *
      * @throws \App\Exceptions\AbuseException
      */
     public function exec()
     {
-        if ($ipDescription = IpAddress::isTrusted($this->getIp())) {
+        if ($ipDescription = IpAddress::isTrusted($this->logLine->getIp())) {
+            // This is a whitelisted IP, skip any rules
             $this->outputDebug('Skipping due to whitelisted IP: ' . $ipDescription, ConsoleColour::TEXT_GREEN);
+
+            return;
+        }
+
+        if ($botName = UserAgent::isTrusted($this->logLine->getUserAgent())) {
+            // This is a whitelisted user agent, skip any rules
+            $this->outputDebug('Skipping due to whitelisted user agent: ' . $botName, ConsoleColour::TEXT_GREEN);
 
             return;
         }
@@ -44,17 +53,9 @@ abstract class Rule extends RequestDetails
     }
 
     /**
-     * @return string
+     * @param LogLine $logLine
      */
-    public function getLogLine()
-    {
-        return $this->logLine;
-    }
-
-    /**
-     * @param string $logLine
-     */
-    public function setLogLine($logLine)
+    public function setLogLine(LogLine $logLine)
     {
         $this->logLine = $logLine;
     }
@@ -62,21 +63,9 @@ abstract class Rule extends RequestDetails
     /**
      * @return string|false
      */
-    protected function isAssetPath()
-    {
-        if (preg_match('#image/png|image/jpeg|image/gif|image/webp|image/svg|text/css|application/javascript|image/x-icon|application/octet-stream|application/pdf|font/opentype|font/otf|font/woff2|font/woff|font/ttf#', $this->getLogLine(), $matches)) {
-            return $matches[0];
-        }
-
-        return false;
-    }
-
-    /**
-     * @return string|false
-     */
     protected function getWebDirectoryPath()
     {
-        $host = $this->getHost();
+        $host = $this->logLine->getHost();
 
         if (!$host) {
             $this->outputDebug('Unable to determine the host from the logs');

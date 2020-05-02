@@ -3,15 +3,21 @@
 namespace App;
 
 /**
- * Class RequestDetails
+ * Class LogLine
  *
  * @package App
  */
-abstract class RequestDetails
+class LogLine
 {
 
+    /**
+     * @var string
+     */
+    private $logLine;
+    /**
+     * @var array
+     */
     protected $requestDetails;
-
     /**
      * @var string|false
      * */
@@ -127,6 +133,9 @@ abstract class RequestDetails
                 }
                 $queryStringArray = parse_str($queryString);
 
+                // Get mimeType (column typically contains encoding too, so we need to split them)
+                list($contentType) = explode(';', trim(strtolower($matches['content_type'])));
+
                 $this->requestDetails = [
                     'request_time' => trim($matches['time']),
                     'url' => trim($matches['protocol']) . '://' . trim($matches['host']) . (isset($matches['uri']) ? trim($matches['uri']) : ''),
@@ -138,7 +147,7 @@ abstract class RequestDetails
                     'uri_no_query_string' => $uriNoQueryString,
                     'query_string' => $queryString,
                     'query_string_array' => $queryStringArray,
-                    'content_type' => trim($matches['content_type']),
+                    'content_type' => $contentType,
                     'response_code' => (int) $matches['response_code'],
                     'ip_raw' => $matches['remote_addr'],
                     'x_forward_for' => (!empty($matches['x_forward_for']) && $matches['x_forward_for'] !== '-' ? $matches['x_forward_for'] : ''),
@@ -175,7 +184,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getRequestTime()
+    public function getRequestTime()
     {
         if ($this->requestTime === null) {
             $this->setRequestDetails();
@@ -187,7 +196,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getUrl()
+    public function getUrl()
     {
         if ($this->url === null) {
             $this->setRequestDetails();
@@ -199,7 +208,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getMethod()
+    public function getMethod()
     {
         if ($this->method === null) {
             $this->setRequestDetails();
@@ -211,7 +220,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getProtocol()
+    public function getProtocol()
     {
         if ($this->protocol === null) {
             $this->setRequestDetails();
@@ -223,7 +232,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getHost()
+    public function getHost()
     {
         if ($this->host === null) {
             $this->setRequestDetails();
@@ -235,7 +244,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getDomain()
+    public function getDomain()
     {
         if ($this->domain === null) {
             $this->setRequestDetails();
@@ -247,7 +256,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getUri()
+    public function getUri()
     {
         if ($this->uri === null) {
             $this->setRequestDetails();
@@ -259,7 +268,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getUriNoQueryString()
+    public function getUriNoQueryString()
     {
         if ($this->uriNoQueryString === null) {
             $this->setRequestDetails();
@@ -271,7 +280,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getQueryString()
+    public function getQueryString()
     {
         if ($this->queryString === null) {
             $this->setRequestDetails();
@@ -283,7 +292,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getQueryStringArray()
+    public function getQueryStringArray()
     {
         if ($this->queryStringArray === null) {
             $this->setRequestDetails();
@@ -295,7 +304,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getContentType()
+    public function getContentType()
     {
         if ($this->contentType === null) {
             $this->setRequestDetails();
@@ -305,9 +314,19 @@ abstract class RequestDetails
     }
 
     /**
+     * Alias of getContentType
+     *
      * @return string|false
      */
-    protected function getResponseCode()
+    public function getMimeType()
+    {
+        return $this->getContentType();
+    }
+
+    /**
+     * @return string|false
+     */
+    public function getResponseCode()
     {
         if ($this->responseCode === null) {
             $this->setRequestDetails();
@@ -319,7 +338,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getIpRaw()
+    public function getIpRaw()
     {
         if ($this->ipRaw === null) {
             $this->setRequestDetails();
@@ -331,7 +350,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getXForwardFor()
+    public function getXForwardFor()
     {
         if ($this->xForwardFor === null) {
             $this->setRequestDetails();
@@ -343,7 +362,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getIp()
+    public function getIp()
     {
         if ($this->ip === null) {
             $this->setRequestDetails();
@@ -358,7 +377,7 @@ abstract class RequestDetails
      *
      * @return string|false
      */
-    protected function getIpHost()
+    public function getIpHost()
     {
         if ($this->ipHost === null) {
             $this->ipHost = gethostbyaddr($this->getIp());
@@ -370,7 +389,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getBytesSent()
+    public function getBytesSent()
     {
         if ($this->bytesSent === null) {
             $this->setRequestDetails();
@@ -382,7 +401,7 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getReferrer()
+    public function getReferrer()
     {
         if ($this->referrer === null) {
             $this->setRequestDetails();
@@ -394,12 +413,28 @@ abstract class RequestDetails
     /**
      * @return string|false
      */
-    protected function getUserAgent()
+    public function getUserAgent()
     {
         if ($this->userAgent === null) {
             $this->setRequestDetails();
         }
 
         return $this->userAgent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogLine()
+    {
+        return $this->logLine;
+    }
+
+    /**
+     * @param string $logLine
+     */
+    public function setLogLine($logLine)
+    {
+        $this->logLine = $logLine;
     }
 }

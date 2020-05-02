@@ -36,7 +36,7 @@ class BlockBadUserAgents extends Rule
     public function run()
     {
         if ($botName = $this->isBadBot()) {
-            $message = 'Blocking blacklisted bot (' . $this->getUserAgent() . ') for matching rule: "' . $botName . '" - ' . $this->getIp();
+            $message = 'Blocking blacklisted bot (' . $this->logLine->getUserAgent() . ') for matching rule: "' . $botName . '" - ' . $this->logLine->getIp();
 
             $this->outputDebug($message, ConsoleColour::TEXT_RED);
 
@@ -49,7 +49,7 @@ class BlockBadUserAgents extends Rule
      */
     protected function isBadBot()
     {
-        $userAgent = $this->getUserAgent();
+        $userAgent = $this->logLine->getUserAgent();
 
         foreach (static::BLACKLISTED_BOTS as $bot) {
             if (strstr($userAgent, $bot)) {

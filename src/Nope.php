@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Exceptions\AbuseException;
 use App\Rules\Rule;
 
 /**
@@ -29,8 +30,11 @@ class Nope
     {
         $this->logHandle = popen('sudo tail -f ' . $logFile, 'r');
 
+        $baseLogLine = new LogLine();
+
         while (true) {
-            $logLine = fgets($this->logHandle, 2000);
+            $logLine = clone $baseLogLine;
+            $logLine->setLogLine(fgets($this->logHandle, 5000));
 
             foreach ($rules() as $rule) {
                 if (!$this->triggerRule($rule, $logLine)) {
@@ -45,18 +49,18 @@ class Nope
     }
 
     /**
-     * @param \App\Rules\Rule $rule
-     * @param string          $logLine
+     * @param Rule    $rule
+     * @param LogLine $logLine
      *
      * @return bool
      */
-    protected function triggerRule(Rule $rule, $logLine)
+    protected function triggerRule(Rule $rule, LogLine $logLine)
     {
         $rule->setLogLine($logLine);
 
         try {
             $rule->exec();
-        } catch (\App\Exceptions\AbuseException $e) {
+        } catch (AbuseException $e) {
             $this->addToIpTables();
 
             return false;

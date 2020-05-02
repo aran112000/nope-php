@@ -23,7 +23,7 @@ class IpAddress
      * Please ensure all IPs are maintained in their correctly named blocks,
      * and any new blocks, should be named appropriately  for future reference
      */
-    const WHITELISTED_IPS = [
+    protected static $whitelistedIps = [
         'Localhost' => [
             '127.0.0.1',
         ],
@@ -69,7 +69,7 @@ class IpAddress
      */
     public static function isTrusted($ipToValidate)
     {
-        foreach (static::WHITELISTED_IPS as $ipDescription => $ips) {
+        foreach (static::$whitelistedIps as $ipDescription => $ips) {
             if (in_array($ipToValidate, $ips)) {
                 return $ipDescription;
             }
