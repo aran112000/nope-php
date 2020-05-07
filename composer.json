@@ -1,12 +1,12 @@
 {
-    "name": "aran112000/phpnope",
+    "name": "aran112000/nope-php",
     "description": "A light-weight tool for parsing log files in real-time and blocking requests that match certain pattern you define",
     "type": "project",
     "license": "MIT",
     "authors": [
         {
             "name": "Aran Reeks",
-            "email": "me@aran.me.uk"
+            "email": "cdtreeks@gmail.com"
         }
     ],
     "require": {
