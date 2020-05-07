@@ -9,12 +9,10 @@ If you're using composer, simply run:
 composer require aran112000/phpnope
 ```
 
-## Expected Nginx access log format
+## Current expected Nginx access log format
 ```console
 '[$time_local] $request_method $scheme://$host$request_uri "$request" "$status" "$http_x_forwarded_for" "$remote_addr" "$remote_user" "$bytes_sent" "$http_referer" "$http_user_agent" "$sent_http_content_type"'
 ```
-
-\[(?<time>.*?)\]\s+(?<method>GET|HEAD|POST|PATCH|PUT|DELETE)\s+(?<url>.*?)\s+"(?<protocol_uri>.*?)"\s+"(?<response_code>.*?)"\s+"(?<x_forward_for>.*?)"\s+"(?<remote_addr>.*?)"\s+"(?<remote_user>.*?)"\s+"(?<bytes_sent>.*?)"\s+"(?<referer>.*?)"\s+"(?<user_agent>.*?)"\s+"(?<sent_content_type>.*?)"
 
 ## Requirements
  * PHP >= 5.6.*
