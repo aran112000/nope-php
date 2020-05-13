@@ -20,5 +20,10 @@
         "psr-4": {
             "App\\": "src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"copy('settings.ini.example', 'settings.ini');\""
+        ]
     }
 }
