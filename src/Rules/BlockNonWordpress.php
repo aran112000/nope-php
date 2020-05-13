@@ -36,6 +36,8 @@ class BlockNonWordpress extends Rule
             return;
         }
 
+        $this->log($this->logLine->getHost() . ' is not a Wordpress website, blocking: ' . $this->logLine->getIp(), ConsoleColour::TEXT_GREEN);
+
         throw new AbuseException($this->logLine->getHost() . ' is not a Wordpress website');
     }
 
