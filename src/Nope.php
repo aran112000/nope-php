@@ -116,6 +116,16 @@ class Nope
             return;
         }
 
+        if (IpAddress::isTrusted($logLine->getIp())) {
+            // Extra check to ensure we don't accidentally block a trusted IP
+            return;
+        }
+
+        if (UserAgent::isTrusted($logLine->getUserAgent())) {
+            // Extra check to ensure we don't accidentally block a trusted User Agent
+            return;
+        }
+
         $this->initIpTablesSetup();
 
         // Add this IP to our block list for 5 minutes, if the IP already exists, the
