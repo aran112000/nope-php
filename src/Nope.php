@@ -77,13 +77,50 @@ class Nope
     }
 
     /**
+     * Creates the ipset and iptable rules required for blocking
      *
+     * Will only be ran once each time this script is initiated, if they
+     * already exist, no changes will be performed
      */
-    protected function addToIpTables()
+    protected function initIpTablesSetup()
+    {
+        static $processed;
+
+        if ($processed) {
+            // Only allow this to try and setup the structure the once
+            return;
+        }
+
+        $processed = true;
+
+        $commands = [
+            // Create an IP list which will block listed IPs for 300 seconds (5 minutes)
+            'ipset create five_minute_ip_block_list hash:ip timeout 300',
+
+            // Setup this new IP list to block the IPs added using iptables
+            'iptables -I INPUT 1 -m set -j DROP  --match-set five_minute_ip_block_list src',
+            'iptables -I FORWARD 1 -m set -j DROP  --match-set five_minute_ip_block_list src',
+        ];
+
+        // Run each of these commands in order and only if the prior was successful
+        // If the ipset already exists, it'll exit and prevent us re-adding the iptables rules
+        exec(implode(' && ', $commands));
+    }
+
+    /**
+     * @param \App\LogLine $logLine
+     */
+    protected function addToIpTables(LogLine $logLine)
     {
         if (DEBUG_MODE) {
             return;
         }
+
+        $this->initIpTablesSetup();
+
+        // Add this IP to our block list for 5 minutes, if the IP already exists, the
+        // block time will be renewed with this call:
+        exec('ipset -exist add five_minute_ip_block_list ' . escapeshellarg($logLine->getIp()));
     }
 
     /**
