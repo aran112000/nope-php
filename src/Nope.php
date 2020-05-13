@@ -68,7 +68,7 @@ class Nope
         try {
             $rule->run();
         } catch (AbuseException $e) {
-            $this->addToIpTables();
+            $this->addToIpTables($logLine);
 
             return false;
         }
