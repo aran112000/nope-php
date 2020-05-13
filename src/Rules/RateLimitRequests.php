@@ -39,7 +39,7 @@ class RateLimitRequests extends Rule
      * @param int  $periodDurationSeconds - Defaults to 1 minute (60 seconds)
      * @param bool $ignoreAssetRequests   - Should static files be ignored in the request counts? Defaults to true
      */
-    public function __construct($maxRequestsInPeriod = 50, $periodDurationSeconds = 60, $ignoreAssetRequests = true)
+    public function __construct($maxRequestsInPeriod = 70, $periodDurationSeconds = 60, $ignoreAssetRequests = true)
     {
         $this->maxRequestsInPeriod = $maxRequestsInPeriod;
         $this->periodDurationSeconds = $periodDurationSeconds;
