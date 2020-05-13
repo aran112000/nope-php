@@ -7,7 +7,7 @@ ini_set('display_errors', true);
  * constant output will be printed to STD_OUT detailing requests
  * processed.
  */
-define('DEBUG_MODE', true);
+define('DEBUG_MODE', false);
 define('PRINT_OUTPUT', true);
 
 require __DIR__ . '/vendor/autoload.php';
