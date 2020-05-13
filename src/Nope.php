@@ -81,8 +81,8 @@ class Nope
      */
     protected function addToIpTables()
     {
-        if (!DEBUG_MODE) {
-            // TODO; Add to IPTABLES via IPSET
+        if (DEBUG_MODE) {
+            return;
         }
     }
 
