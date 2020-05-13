@@ -24,7 +24,7 @@ class Setting
 
         if ($settings === null) {
             $settings = [];
-            if ($tmpSettings = parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . static::SETTING_FILE, true)) {
+            if ($tmpSettings = parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . static::SETTING_FILE, true)) {
                 $settings = $tmpSettings;
             }
         }
