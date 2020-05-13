@@ -6,7 +6,7 @@ Designed as a fully customisable framework to process your log files in realtime
 ## Installation
 If you're using composer, simply run:
 ```console 
-composer require aran112000/phpnope
+composer require aran112000/nope-php
 ```
 
 ## Current expected Nginx access log format
