@@ -13,6 +13,7 @@ define('PRINT_OUTPUT', true);
 require __DIR__ . '/vendor/autoload.php';
 
 use App\Nope;
+use App\Notifications\MicrosoftTeams;
 use App\Rules\RateLimitRequests;
 use App\Rules\BlockBadUserAgents;
 use App\Rules\BlockNonWordpress;
@@ -23,4 +24,6 @@ use App\Rules\BlockMaliciousFileRequests;
     yield new BlockBadUserAgents();
     yield new BlockNonWordpress();
     yield new BlockMaliciousFileRequests();
-});
+}, [
+    new MicrosoftTeams()
+]);
