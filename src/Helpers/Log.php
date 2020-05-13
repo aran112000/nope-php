@@ -16,7 +16,7 @@ class Log
      */
     public static function write($message, $colour = null)
     {
-        if (!DEBUG_MODE) {
+        if (!PRINT_OUTPUT) {
             return;
         }
 

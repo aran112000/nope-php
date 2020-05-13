@@ -8,6 +8,7 @@ ini_set('display_errors', true);
  * processed.
  */
 define('DEBUG_MODE', true);
+define('PRINT_OUTPUT', true);
 
 require __DIR__ . '/vendor/autoload.php';
 
