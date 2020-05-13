@@ -8,6 +8,7 @@ use App\Exceptions\AbuseException;
 use App\Helpers\ConsoleColour;
 use App\Helpers\Log;
 use App\Rules\Rule;
+use App\Notifications\NotificationInterface;
 
 /**
  * Class Nope
@@ -18,20 +19,28 @@ class Nope
 {
 
     /**
-     * @var resource|false|null
+     * @var resource|false
      */
     private $logHandle;
 
     /**
-     * @param string $logFile  - The log file you wish to monitor
-     * @param        $rules    - Should yield the rules you want to apply in the order you desire
-     *                           them to be evaluated in. Any rules that don't pass and throw the
-     *                           AbuseException will result in an iptables ban being issued
-     *                           for that IP address. After a ban, no other rules will be ran for
-     *                           that log line.
+     * @var NotificationInterface[]
      */
-    public function monitorLog($logFile, \Closure $rules)
+    private $notificatonChannels;
+
+    /**
+     * @param string                  $logFile              - The log file you wish to monitor
+     * @param \Closure                $rules                - Should yield the rules you want to apply in the order you desire
+     *                                                        them to be evaluated in. Any rules that don't pass and throw the
+     *                                                        AbuseException will result in an iptables ban being issued
+     *                                                        for that IP address. After a ban, no other rules will be ran for
+     *                                                        that log line.
+     * @param NotificationInterface[] $notificationChannels - Any channels you wish to notify when a ban occurs (optional)
+     */
+    public function monitorLog($logFile, \Closure $rules, array $notificationChannels = [])
     {
+        $this->notificatonChannels = $notificationChannels;
+
         $this->logHandle = popen('sudo tail -f ' . $logFile, 'r');
 
         while (true) {
@@ -108,7 +117,7 @@ class Nope
     }
 
     /**
-     * @param \App\LogLine $logLine
+     * @param LogLine $logLine
      */
     protected function addToIpTables(LogLine $logLine)
     {
@@ -131,6 +140,24 @@ class Nope
         // Add this IP to our block list for 5 minutes, if the IP already exists, the
         // block time will be renewed with this call:
         exec('ipset -exist add five_minute_ip_block_list ' . escapeshellarg($logLine->getIp()));
+
+        $this->sendNotifications($logLine);
+    }
+
+    /**
+     * @param LogLine $logLine
+     */
+    protected function sendNotifications(LogLine $logLine)
+    {
+        foreach ($this->notificatonChannels as $channel) {
+            $channel->send('IP address blocked', [
+                'IP address' => $logLine->getIp(),
+                'User agent' => $logLine->getUserAgent(),
+                'Domain' => $logLine->getDomain(),
+                'URI' => $logLine->getUri(),
+                'Method' => $logLine->getMethod(),
+            ]);
+        }
     }
 
     /**
