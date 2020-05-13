@@ -34,11 +34,9 @@ class Nope
     {
         $this->logHandle = popen('sudo tail -f ' . $logFile, 'r');
 
-        $baseLogLine = new LogLine();
-
         while (true) {
-            $logLine = clone $baseLogLine;
-            $logLine->setLogLine(fgets($this->logHandle, 5000));
+            $logLine = new LogLine();
+            $logLine->setLogLine(fgets($this->logHandle, 10000));
 
             if ($this->isWhitelistedRequest($logLine)) {
                 // Whitelisted so don't try and process
