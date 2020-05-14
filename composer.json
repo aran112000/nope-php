@@ -12,7 +12,8 @@
     "require": {
       "php": ">=5.6.0",
       "ext-redis": "*",
-      "ext-curl": "*"
+      "ext-curl": "*",
+      "ext-json": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.5"
