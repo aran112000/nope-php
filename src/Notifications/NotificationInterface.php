@@ -11,9 +11,10 @@ interface NotificationInterface
 {
 
     /**
-     * @param string $message
-     * @param array  $keyValueDetails
+     * @param string                         $message
+     * @param array                          $keyValueDetails
+     * @param string|null $url
      */
-    public function send($message, array $keyValueDetails = []);
+    public function send($message, array $keyValueDetails = [], $url = null);
 
 }

@@ -13,10 +13,11 @@ class MicrosoftTeams implements NotificationInterface
 {
 
     /**
-     * @param string $message
-     * @param array  $keyValueDetails
+     * @param string      $message
+     * @param array       $keyValueDetails
+     * @param string|null $url
      */
-    public function send($message, array $keyValueDetails = [])
+    public function send($message, array $keyValueDetails = [], $url = null)
     {
         if ($keyValueDetails) {
             $details = [];
@@ -40,6 +41,19 @@ class MicrosoftTeams implements NotificationInterface
                     ]
                 ],
             ];
+
+            if ($url) {
+                $messageBody['potentialAction'] = [
+                    [
+                        '@type' => 'OpenUri',
+                        'name' => 'Open in browser',
+                        'targets' => [
+                            'os' => 'default',
+                            'uri' => $url,
+                        ],
+                    ],
+                ];
+            }
         } else {
             $messageBody = [
                 '@type' => 'MessageCard',
