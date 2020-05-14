@@ -41,7 +41,7 @@ class Nope
     {
         $this->notificatonChannels = $notificationChannels;
 
-        $this->logHandle = popen('sudo tail -f ' . $logFile, 'r');
+        $this->logHandle = popen('sudo tail -F ' . $logFile, 'r');
 
         while (true) {
             $logLine = new LogLine();
