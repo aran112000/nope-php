@@ -48,8 +48,10 @@ class MicrosoftTeams implements NotificationInterface
                         '@type' => 'OpenUri',
                         'name' => 'Open in browser',
                         'targets' => [
-                            'os' => 'default',
-                            'uri' => $url,
+                            [
+                                'os' => 'default',
+                                'uri' => $url,
+                            ],
                         ],
                     ],
                 ];
