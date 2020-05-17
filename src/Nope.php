@@ -47,7 +47,7 @@ class Nope
 
         while ($this->logHandle) {
             $logLine = new LogLine();
-            $logLine->setLogLine(fgets($this->logHandle, 10000));
+            $logLine->setLogLine((string) fgets($this->logHandle, 10000));
 
             if ($this->isWhitelistedRequest($logLine)) {
                 // Whitelisted so don't try and process
