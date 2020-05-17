@@ -21,6 +21,14 @@ class MicrosoftTeams implements NotificationInterface
      */
     public function send($message, array $keyValueDetails = [], $url = null)
     {
+        $messageBody = [
+            '@type' => 'MessageCard',
+            '@context' => 'https://schema.org/extensions',
+            'title' => $message,
+            'summary' => $message,
+            'themeColor' => 'FF0000',
+        ];
+
         if ($keyValueDetails) {
             $details = [];
             foreach ($keyValueDetails as $key => $value) {
@@ -31,11 +39,6 @@ class MicrosoftTeams implements NotificationInterface
             }
 
             $messageBody = [
-                '@type' => 'MessageCard',
-                '@context' => 'https://schema.org/extensions',
-                'title' => $message,
-                'summary' => $message,
-                'themeColor' => 'FF0000',
                 'sections' => [
                     [
                         'title' => '**' . $message . '**',
@@ -43,28 +46,20 @@ class MicrosoftTeams implements NotificationInterface
                     ],
                 ],
             ];
+        }
 
-            if ($url) {
-                $messageBody['potentialAction'] = [
-                    [
-                        '@type' => 'OpenUri',
-                        'name' => 'Open in browser',
-                        'targets' => [
-                            [
-                                'os' => 'default',
-                                'uri' => $url,
-                            ],
+        if ($url) {
+            $messageBody['potentialAction'] = [
+                [
+                    '@type' => 'OpenUri',
+                    'name' => 'Open in browser',
+                    'targets' => [
+                        [
+                            'os' => 'default',
+                            'uri' => $url,
                         ],
                     ],
-                ];
-            }
-        } else {
-            $messageBody = [
-                '@type' => 'MessageCard',
-                '@context' => 'https://schema.org/extensions',
-                'title' => $message,
-                'summary' => $message,
-                'themeColor' => 'FF0000',
+                ],
             ];
         }
 
