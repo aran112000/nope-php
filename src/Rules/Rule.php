@@ -19,11 +19,13 @@ abstract class Rule
     protected $logLine;
 
     /**
+     * @return void
      * @throws \App\Exceptions\AbuseException
      */
     abstract public function run();
 
     /**
+     * @return void
      * @param LogLine $logLine
      */
     public function setLogLine(LogLine $logLine)
@@ -64,12 +66,15 @@ abstract class Rule
     /**
      * @param string       $message
      * @param null|string  $colour   - Constant from App\ConsoleColour
+     *
+     * @return void
      */
     protected function log($message, $colour = null)
     {
         // Get a friendly rule name from camelCase class names
-        $classParts = explode('\\', get_called_class());
-        $friendlyRuleName = ucfirst(strtolower(trim(preg_replace('#([A-Z])#', ' $1', end($classParts)))));
+        $classNameNoNamespace = (new \ReflectionClass($this))->getShortName();
+        $ruleName = (string) preg_replace('#([A-Z])#', ' $1', $classNameNoNamespace);
+        $friendlyRuleName = ucfirst(strtolower(trim($ruleName)));
 
         $message = $friendlyRuleName . ': ' . $message;
 
