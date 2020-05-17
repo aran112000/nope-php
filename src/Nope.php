@@ -7,8 +7,8 @@ use App\Config\UserAgent;
 use App\Exceptions\AbuseException;
 use App\Helpers\ConsoleColour;
 use App\Helpers\Log;
-use App\Rules\Rule;
 use App\Notifications\NotificationInterface;
+use App\Rules\Rule;
 
 /**
  * Class Nope
@@ -22,7 +22,6 @@ class Nope
      * @var resource|false
      */
     private $logHandle;
-
     /**
      * @var NotificationInterface[]
      */
@@ -30,7 +29,7 @@ class Nope
 
     /**
      * @param string                  $logFile              The log file you wish to monitor
-     * @param \Closure $rules                               Should yield the rules you want to apply in the order you
+     * @param \Closure                $rules                Should yield the rules you want to apply in the order you
      *                                                      desire them to be evaluated in. Any rules that don't pass
      *                                                      and throw the AbuseException will result in an iptables ban
      *                                                      being issued for that IP address. After a ban, no other
