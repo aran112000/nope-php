@@ -45,7 +45,7 @@ class Nope
 
         $this->logHandle = popen('sudo tail -F ' . $logFile, 'r');
 
-        while (true) {
+        while ($this->logHandle) {
             $logLine = new LogLine();
             $logLine->setLogLine(fgets($this->logHandle, 10000));
 
@@ -61,7 +61,7 @@ class Nope
             }
         }
 
-        if ($this->logHandle !== null) {
+        if ($this->logHandle) {
             pclose($this->logHandle);
         }
     }
