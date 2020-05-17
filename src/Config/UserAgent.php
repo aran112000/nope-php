@@ -15,7 +15,7 @@ class UserAgent
      */
     public static function isTrusted($userAgentStringToValidate)
     {
-        foreach (Setting::get('Whitelist', 'IPs') as $userAgentDescription => $userAgentVersions) {
+        foreach (Setting::get('Whitelist', 'Bots') as $userAgentDescription => $userAgentVersions) {
             foreach ($userAgentVersions as $agentVersion) {
                 if (stristr($userAgentStringToValidate, $agentVersion)) {
                     return $userAgentDescription;
