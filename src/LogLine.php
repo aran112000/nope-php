@@ -131,7 +131,7 @@ class LogLine
                 if (!empty($uriParts[1])) {
                     $queryString = $uriParts[1];
                 }
-                $queryStringArray = parse_str($queryString);
+                parse_str($queryString, $queryStringArray);
 
                 // Get mimeType (column typically contains encoding too, so we need to split them)
                 list($contentType) = explode(';', trim(strtolower($matches['content_type'])));
