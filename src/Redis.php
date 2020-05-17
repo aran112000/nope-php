@@ -2,18 +2,19 @@
 
 namespace App;
 
+use App\Config\Setting;
+
+/**
+ * Class Redis
+ *
+ * @package App
+ */
 class Redis
 {
 
-    // Your connection details
-    const HOST = '127.0.0.1';
-    const PORT = '6379';
-
-    // Add a prefix to all our Redis keys to help prevent collisions
-    const PREFIX = 'Nope';
-
     /**
-     * @return \Redis|false
+     * @return \Redis
+     * @throws \Exception
      */
     public static function connection()
     {
@@ -22,15 +23,14 @@ class Redis
         if ($client === null) {
             $client = new \Redis();
 
-            if (!$client->connect(static::HOST, self::PORT)) {
+            if (!$client->connect(Setting::get('Redis', 'Host'), Setting::get('Redis', 'Port'))) {
                 $client = false;
 
-                trigger_error('Failed to connect to Redis');
-
-                return false;
+                throw new \Exception('Failed to connect to Redis');
             }
 
-            $client->setOption(\Redis::OPT_PREFIX, static::PREFIX);
+            // We use a prefix to prevent a collision existing Redis keys
+            $client->setOption(\Redis::OPT_PREFIX, 'aran112000/nope-php');
         }
 
         return $client;
