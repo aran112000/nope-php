@@ -9,6 +9,8 @@ use App\Helpers\ConsoleColour;
 use App\Helpers\Log as Logger;
 use App\Notifications\NotificationInterface;
 use App\Rules\Rule;
+use Closure;
+use InvalidArgumentException;
 
 /**
  * Class Nope
@@ -88,11 +90,11 @@ class Log
     }
 
     /**
-     * @param \Closure $closure
+     * @param Closure $closure
      *
      * @return self
      */
-    public function whitelist(\Closure $closure)
+    public function whitelist(Closure $closure)
     {
         $this->whitelistRules[] = $closure;
 
@@ -109,11 +111,11 @@ class Log
     public function monitor()
     {
         if (!$this->logFile) {
-            throw new \InvalidArgumentException('You must specify a valid log file');
+            throw new InvalidArgumentException('You must specify a valid log file');
         }
 
         if (!$this->rules) {
-            throw new \InvalidArgumentException('You must provide some rules you\'d like to assert before running');
+            throw new InvalidArgumentException('You must provide some rules you\'d like to assert before running');
         }
 
         $this->logHandle = popen('sudo tail -F ' . $this->logFile . ' -n0', 'r');
