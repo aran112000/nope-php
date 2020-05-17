@@ -61,7 +61,7 @@ class BlockMaliciousFileRequests extends Rule
                 if ($this->logLine->getResponseCode() <= 400) {
                     // As the web server responded with a seemingly valid response code, we'll allow it!
                     $this->log(sprintf(
-                        "Allowing attempt to access a malicious URI (%s) because it got a %i response from %s",
+                        "Allowing attempt to access a malicious URI (%s) because it got a %d response from %s",
                         $this->logLine->getUrl(),
                         $this->logLine->getResponseCode(),
                         $this->logLine->getIp()
