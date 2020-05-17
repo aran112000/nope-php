@@ -29,13 +29,15 @@ class Nope
     private $notificatonChannels;
 
     /**
-     * @param string                  $logFile              - The log file you wish to monitor
-     * @param \Closure                $rules                - Should yield the rules you want to apply in the order you desire
-     *                                                        them to be evaluated in. Any rules that don't pass and throw the
-     *                                                        AbuseException will result in an iptables ban being issued
-     *                                                        for that IP address. After a ban, no other rules will be ran for
-     *                                                        that log line.
-     * @param NotificationInterface[] $notificationChannels - Any channels you wish to notify when a ban occurs (optional)
+     * @param string                  $logFile              The log file you wish to monitor
+     * @param \Closure $rules                               Should yield the rules you want to apply in the order you
+     *                                                      desire them to be evaluated in. Any rules that don't pass
+     *                                                      and throw the AbuseException will result in an iptables ban
+     *                                                      being issued for that IP address. After a ban, no other
+     *                                                      rules will be ran for that log line.
+     * @param NotificationInterface[] $notificationChannels Any channels you wish to notify when a ban occurs (optional)
+     *
+     * @return void
      */
     public function monitorLog($logFile, \Closure $rules, array $notificationChannels = [])
     {
