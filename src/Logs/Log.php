@@ -276,7 +276,9 @@ class Log
         // Run any log specific whitelist rules
         foreach ($this->whitelistRules as $whitelisted) {
             if ($whitelistReason = $whitelisted($logLine)) {
-                Logger::write('Skipping due to log-specific whitelist: ' . $whitelistReason);
+                Logger::write('Skipping due to log-specific whitelist: ' . $whitelistReason, ConsoleColour::TEXT_GREEN);
+
+                return true;
             }
         }
 
