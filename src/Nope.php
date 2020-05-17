@@ -92,6 +92,8 @@ class Nope
      *
      * Will only be ran once each time this script is initiated, if they
      * already exist, no changes will be performed
+     *
+     * @return void
      */
     protected function initIpTablesSetup()
     {
@@ -120,6 +122,8 @@ class Nope
 
     /**
      * @param LogLine $logLine
+     *
+     * @return void
      */
     protected function addToIpTables(LogLine $logLine)
     {
@@ -148,6 +152,8 @@ class Nope
 
     /**
      * @param LogLine $logLine
+     *
+     * @return void
      */
     protected function sendNotifications(LogLine $logLine)
     {
