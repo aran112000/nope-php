@@ -27,11 +27,11 @@ class Log
         $time = date('d/m/Y H:i:s');
 
         if ($colour === null) {
-            echo "[$time] $message\n";
+            echo sprintf("[%s] %s\n", $time, $message);
 
             return;
         }
 
-        echo "[$time] \033[" . $colour . "m$message\033[0m\n";
+        echo sprintf("[%s] \033[%sm%s\033[0m\n", $time, $colour, $message);
     }
 }
