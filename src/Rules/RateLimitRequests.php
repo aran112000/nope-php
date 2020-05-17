@@ -72,10 +72,10 @@ class RateLimitRequests extends Rule
 
         if ($this->ignoreAssetRequests && $assetType = $this->isStaticFile()) {
             // Ignoring IP as it's a request for an asset
-            $this->log(
+            /*$this->log(
                 "Ignoring request for $assetType ({$this->logLine->getMimeType()}) from {$this->logLine->getIp()}",
                 ConsoleColour::TEXT_GREEN
-            );
+            );*/
 
             return;
         }
