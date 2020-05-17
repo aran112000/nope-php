@@ -14,7 +14,9 @@ class BlockNonWordpress extends Rule
 {
 
     /**
+     * @return void
      *
+     * @throws \App\Exceptions\AbuseException
      */
     public function run()
     {
@@ -36,7 +38,10 @@ class BlockNonWordpress extends Rule
             return;
         }
 
-        $this->log($this->logLine->getHost() . ' is not a Wordpress website, blocking: ' . $this->logLine->getIp(), ConsoleColour::TEXT_RED);
+        $this->log(
+            $this->logLine->getHost() . ' is not a Wordpress website, blocking: ' . $this->logLine->getIp(),
+            ConsoleColour::TEXT_RED
+        );
 
         throw new AbuseException($this->logLine->getHost() . ' is not a Wordpress website');
     }
@@ -56,6 +61,9 @@ class BlockNonWordpress extends Rule
         return false;
     }
 
+    /**
+     * @return bool
+     */
     protected function isWordpressRequest()
     {
         $uri = $this->logLine->getUri();
