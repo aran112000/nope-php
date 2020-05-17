@@ -116,7 +116,7 @@ class Log
             throw new \InvalidArgumentException('You must provide some rules you\'d like to assert before running');
         }
 
-        $this->logHandle = popen('sudo tail -F ' . $this->logFile, 'r');
+        $this->logHandle = popen('sudo tail -F ' . $this->logFile . ' -n0', 'r');
 
         while ($this->logHandle) {
             $logLine = new LogLine();
