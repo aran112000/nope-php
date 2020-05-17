@@ -86,42 +86,39 @@ class RateLimitRequests extends Rule
     }
 
     /**
+     * We allow a look back at the previous minute's traffic as well as the current If either exceed the specified
+     * threshold, then a block is performed
+     *
      * @return void
      *
      * @throws \App\Exceptions\AbuseException
      */
     protected function logRequestAndBlockIfAbuseDetected()
     {
-        // We allow a look back at the previous minute's traffic as well as the current
-        // If either exceed the specified threshold, then a block is performed
-
         $currentTimeKey = floor(time() / $this->getPeriodDurationSeconds()); // Valid for X seconds
 
         $currentCacheKey = 'RateLimitGetRequests:' . $currentTimeKey . ':' . $this->logLine->getIp();
         $previousCacheKey = 'RateLimitGetRequests:' . ($currentTimeKey - 1) . ':' . $this->logLine->getIp();
 
-        $redisResponses = Redis::connection()
-            // Start a batch request to Redis
-            ->multi()
+        $redisBatchRequestHandler = Redis::connection()->multi();
 
-            // Fetch the request count during the lookup window
-            ->get($previousCacheKey)
-
-            // Increment the current request count, this also returns the current count
-            ->incr($currentCacheKey)
-
-            // Set the current count key to expire (double the request time limit to allow for our look back window)
-            ->expire($currentCacheKey, $this->getPeriodDurationSeconds() * 2)
-
-            // Execute the batch requests against Redis for performance
-            ->exec();
+        // Fetch the request count during the lookup window
+        $redisBatchRequestHandler->get($previousCacheKey);
+        // Increment the current request count, this also returns the current count
+        $redisBatchRequestHandler->incr($currentCacheKey);
+        // Set the current count key to expire (double the request time limit to allow for our look back window)
+        $redisBatchRequestHandler->expire($currentCacheKey, $this->getPeriodDurationSeconds() * 2);
+        // Execute the batch requests against Redis
+        $redisResponses = $redisBatchRequestHandler->exec();
 
         list($previousPeriodRequestCount, $currentPeriodRequestCount) = $redisResponses;
 
         // Blocks are based on exceeding an average of the current and look back periods
         $highestRequestCountLastTwoPeriods = max($previousPeriodRequestCount, $currentPeriodRequestCount);
 
-        $this->log("{$this->logLine->getIp()} request peak: $highestRequestCountLastTwoPeriods - {$this->logLine->getDomain()}");
+        $this->log(
+            "{$this->logLine->getIp()} request peak: $highestRequestCountLastTwoPeriods - {$this->logLine->getDomain()}"
+        );
 
         if ($highestRequestCountLastTwoPeriods > $this->getMaxRequestsInPeriod()) {
             $message = "{$this->logLine->getIp()} exceeded the threshold of {$this->getMaxRequestsInPeriod()} requests within {$this->getPeriodDurationSeconds()} seconds - {$this->logLine->getHost()}";
