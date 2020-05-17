@@ -41,16 +41,28 @@ class BlockMaliciousFileRequests extends Rule
         foreach (static::BLOCK_URIS_IF_NOT_EXISTING as $relativePath) {
             if ($this->logLine->getUriNoQueryString() === $relativePath) {
                 // This is a flagged path!
-                $this->log('Attempt to access a malicious URI: ' . $this->logLine->getUrl() . ' - ' . $this->logLine->getIp(), ConsoleColour::TEXT_BLUE);
+                $this->log(sprintf(
+                    "Attempt to access a malicious URI: %s - %s",
+                    $this->logLine->getUrl(),
+                    $this->logLine->getIp()
+                ), ConsoleColour::TEXT_BLUE);
 
                 if ($this->webPathExists($relativePath)) {
                     // As this is actually a valid path within the vhost, we'll allow it
-                    $this->log('Allowing attempt to access a malicious URI because it exists in the vhost: ' . $this->logLine->getUrl() . ' - ' . $this->logLine->getIp());
+                    $this->log(sprintf(
+                        "Allowing attempt to access a malicious URI because it exists in the vhost: %s - %s",
+                        $this->logLine->getUrl(),
+                        $this->logLine->getIp()
+                    ));
 
                     return;
                 }
 
-                $message = 'Blocking attempt to access a non-existing malicious URI: ' . $this->logLine->getUrl() . ' - ' . $this->logLine->getIp();
+                $message = sprintf(
+                    "Blocking attempt to access a non-existing malicious URI: %s - %s",
+                    $this->logLine->getUrl(),
+                    $this->logLine->getIp()
+                );
 
                 $this->log($message, ConsoleColour::TEXT_RED);
 
@@ -67,8 +79,9 @@ class BlockMaliciousFileRequests extends Rule
     protected function webPathExists($relativePath)
     {
         $relativePath = ltrim($relativePath, '/ ');
+        $relativePath = str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
 
-        $rootPath = $this->getWebDirectoryPath() . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+        $rootPath = $this->getWebDirectoryPath() . DIRECTORY_SEPARATOR . $relativePath;
 
         if (file_exists($rootPath) || is_dir($rootPath)) {
             return true;
