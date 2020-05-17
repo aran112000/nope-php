@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Logs;
 
 use App\Config\IpAddress;
 use App\Config\UserAgent;
@@ -13,11 +13,15 @@ use App\Rules\Rule;
 /**
  * Class Nope
  *
- * @package App
+ * @package App\Logs
  */
-class Nope
+class Log
 {
 
+    /**
+     * @var string
+     */
+    public $logFile;
     /**
      * @var resource|false
      */
@@ -25,24 +29,94 @@ class Nope
     /**
      * @var NotificationInterface[]
      */
-    private $notificatonChannels;
+    private $notificationChannels;
+    /**
+     * @var Rule[]
+     */
+    private $rules;
+    /**
+     * @var \Closure[]
+     */
+    private $whitelistRules;
+    /**
+     * @var bool
+     */
+    private $applyBlocks = false;
 
     /**
-     * @param string                  $logFile              The log file you wish to monitor
-     * @param \Closure                $rules                Should yield the rules you want to apply in the order you
-     *                                                      desire them to be evaluated in. Any rules that don't pass
-     *                                                      and throw the AbuseException will result in an iptables ban
-     *                                                      being issued for that IP address. After a ban, no other
-     *                                                      rules will be ran for that log line.
-     * @param NotificationInterface[] $notificationChannels Any channels you wish to notify when a ban occurs (optional)
+     * Log constructor.
+     *
+     * @param string $logFile
+     */
+    public function __construct($logFile)
+    {
+        $this->logFile = $logFile;
+
+        static $init;
+        if ($init === null) {
+            // First time ran, bootstrap anything here that only needs to be ran once
+
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'true');
+        }
+    }
+
+    /**
+     * @param Rule[] $rules
+     *
+     * @return self
+     */
+    public function rules(array $rules)
+    {
+        $this->rules = $rules;
+
+        return $this;
+    }
+
+    /**
+     * Any channels you wish to notify when a ban occurs
+     *
+     * @param NotificationInterface[] $notificationChannels
+     *
+     * @return self
+     */
+    public function notify(array $notificationChannels)
+    {
+        $this->notificationChannels = $notificationChannels;
+
+        return $this;
+    }
+
+    /**
+     * @param \Closure $closure
+     *
+     * @return self
+     */
+    public function whitelist(\Closure $closure)
+    {
+        $this->whitelistRules[] = $closure;
+
+        return $this;
+    }
+
+    /**
+     * When called directly will simply monitor your log and report back on the result of your rules.
+     *
+     * If you wish to apply blocks, call monitorAndBlock() instead of this method.
      *
      * @return void
      */
-    public function monitorLog($logFile, \Closure $rules, array $notificationChannels = [])
+    public function monitor()
     {
-        $this->notificatonChannels = $notificationChannels;
+        if (!$this->logFile) {
+            throw new \InvalidArgumentException('You must specify a valid log file');
+        }
 
-        $this->logHandle = popen('sudo tail -F ' . $logFile, 'r');
+        if (!$this->rules) {
+            throw new \InvalidArgumentException('You must provide some rules you\'d like to assert before running');
+        }
+
+        $this->logHandle = popen('sudo tail -F ' . $this->logFile, 'r');
 
         while ($this->logHandle) {
             $logLine = new LogLine();
@@ -53,7 +127,7 @@ class Nope
                 continue;
             }
 
-            foreach ($rules() as $rule) {
+            foreach ($this->rules as $rule) {
                 if (!$this->passesRule($rule, $logLine)) {
                     break;
                 }
@@ -66,6 +140,24 @@ class Nope
     }
 
     /**
+     * Will monitor your log file, and apply blocks as dictated by your rules
+     *
+     * @return void
+     */
+    public function monitorAndBlock()
+    {
+        $initialBlockState = $this->applyBlocks;
+
+        $this->applyBlocks = true;
+
+        $this->monitor();
+
+        $this->applyBlocks = $initialBlockState;
+    }
+
+    /**
+     * Invoke the specified rule, returns false if AbuseException thrown to block the request
+     *
      * @param Rule    $rule
      * @param LogLine $logLine
      *
@@ -181,6 +273,13 @@ class Nope
      */
     protected function isWhitelistedRequest(LogLine $logLine)
     {
+        // Run any log specific whitelist rules
+        foreach ($this->whitelistRules as $whitelisted) {
+            if ($whitelistReason = $whitelisted($logLine)) {
+                Logger::write('Skipping due to log-specific whitelist: ' . $whitelistReason);
+            }
+        }
+
         if ($ipDescription = IpAddress::isTrusted($logLine->getIp())) {
             // This is a whitelisted IP, skip any rules
             Logger::write('Skipping due to whitelisted IP: ' . $ipDescription, ConsoleColour::TEXT_GREEN);
