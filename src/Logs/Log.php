@@ -54,7 +54,7 @@ class Nope
             }
 
             foreach ($rules() as $rule) {
-                if (!$this->triggerRule($rule, $logLine)) {
+                if (!$this->passesRule($rule, $logLine)) {
                     break;
                 }
             }
@@ -71,7 +71,7 @@ class Nope
      *
      * @return bool
      */
-    protected function triggerRule(Rule $rule, LogLine $logLine)
+    protected function passesRule(Rule $rule, LogLine $logLine)
     {
         $rule->setLogLine($logLine);
 
