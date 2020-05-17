@@ -27,10 +27,10 @@ class Setting
                 __DIR__,
                 '..',
                 '..',
-                'settings.ini',
+                'settings.json',
             ]);
 
-            if ($tmpSettings = parse_ini_file($settingsFilePath, true)) {
+            if ($tmpSettings = json_decode(file_get_contents($settingsFilePath), true)) {
                 $settings = $tmpSettings;
             }
         }

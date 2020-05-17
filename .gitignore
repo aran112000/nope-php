@@ -1,4 +1,4 @@
 /vendor/
 /composer.lock
-/settings.ini
+/settings.json
 /runner.php

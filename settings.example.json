@@ -1,0 +1,34 @@
+{
+    "General": {
+        "MuteConsoleOutput": false
+    },
+
+    "Whitelist": {
+
+        "IPs": {
+            "Localhost": [
+                "127.0.0.1"
+            ]
+        },
+
+        "Bots": {
+            "Google": [
+                "Googlebot",
+                "Mediapartners-Google",
+                "AdsBot-Google"
+            ],
+            "Bing": [
+                "bingbot"
+            ]
+        }
+    },
+
+    "Redis": {
+        "Host": "127.0.0.1",
+        "Port": 6379
+    },
+
+    "MicrosoftTeams": {
+        "WebhookURL": ""
+    }
+}
