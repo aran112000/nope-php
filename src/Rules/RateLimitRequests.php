@@ -20,12 +20,10 @@ class RateLimitRequests extends Rule
      * @var int
      */
     private $maxRequestsInPeriod;
-
     /**
      * @var int
      */
     private $periodDurationSeconds;
-
     /**
      * @var bool
      */
