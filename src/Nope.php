@@ -123,7 +123,7 @@ class Nope
      */
     protected function addToIpTables(LogLine $logLine)
     {
-        if (DEBUG_MODE) {
+        if (!defined('DEBUG_MODE') || DEBUG_MODE) {
             return;
         }
 
