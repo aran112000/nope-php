@@ -279,7 +279,7 @@ class Log
         foreach ($this->whitelistRules as $whitelisted) {
             if ($whitelistReason = $whitelisted($logLine)) {
                 Logger::write(
-                    'Skipping ' . $logLine->getDomain() . ' request due to log-specific whitelist: ' . $whitelistReason,
+                    'Skipping ' . $logLine->getDomain() . ', ' . $whitelistReason,
                     ConsoleColour::TEXT_GREEN
                 );
 
@@ -290,7 +290,7 @@ class Log
         if ($ipDescription = IpAddress::isTrusted($logLine->getIp())) {
             // This is a whitelisted IP, skip any rules
             Logger::write(
-                'Skipping ' . $logLine->getDomain() . ' request due to whitelisted IP: ' . $ipDescription,
+                'Skipping ' . $logLine->getDomain() . ', whitelisted IP: ' . $ipDescription,
                 ConsoleColour::TEXT_GREEN
             );
 
@@ -300,7 +300,7 @@ class Log
         if ($botName = UserAgent::isTrusted($logLine->getUserAgent())) {
             // This is a whitelisted user agent, skip any rules
             Logger::write(
-                'Skipping ' . $logLine->getDomain() . ' request due to whitelisted user agent: ' . $botName,
+                'Skipping ' . $logLine->getDomain() . ', whitelisted user agent: ' . $botName,
                 ConsoleColour::TEXT_GREEN
             );
 
