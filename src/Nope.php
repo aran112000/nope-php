@@ -164,7 +164,7 @@ class Nope
                 'Domain' => $logLine->getDomain(),
                 'URI' => $logLine->getUri(),
                 'Method' => $logLine->getMethod(),
-                'Server Hostname' => gethostname(),
+                'Server Hostname' => (string) gethostname(),
             ], $logLine->getUrl());
         }
     }
