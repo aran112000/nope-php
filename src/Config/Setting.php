@@ -30,8 +30,10 @@ class Setting
                 'settings.json',
             ]);
 
-            if ($tmpSettings = json_decode(file_get_contents($settingsFilePath), true)) {
-                $settings = $tmpSettings;
+            if ($json = file_get_contents($settingsFilePath)) {
+                if ($tmpSettings = json_decode($json, true)) {
+                    $settings = $tmpSettings;
+                }
             }
         }
 
