@@ -152,7 +152,7 @@ class Nope
      */
     protected function sendNotifications(LogLine $logLine)
     {
-        foreach ($this->notificatonChannels as $notificationChannel) {
+        foreach ($this->notificationChannels as $notificationChannel) {
             $notificationChannel->send('IP address blocked', [
                 'IP address' => $logLine->getIp(),
                 'User agent' => $logLine->getUserAgent(),
