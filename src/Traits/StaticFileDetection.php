@@ -10,6 +10,9 @@ namespace App\Traits;
 trait StaticFileDetection
 {
 
+    /**
+     * @var string[][]
+     */
     private $staticFileTypes = [
         'Image' => [
             'image/png',
