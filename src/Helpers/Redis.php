@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Helpers;
 
 use App\Config\Setting;
 
 /**
  * Class Redis
  *
- * @package App
+ * @package App\Helpers
  */
 class Redis
 {
