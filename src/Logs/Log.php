@@ -126,10 +126,6 @@ class Nope
      */
     protected function addToIpTables(LogLine $logLine)
     {
-        if (!defined('DEBUG_MODE') || DEBUG_MODE) {
-            return;
-        }
-
         if (IpAddress::isTrusted($logLine->getIp())) {
             // Extra check to ensure we don't accidentally block a trusted IP
             return;
