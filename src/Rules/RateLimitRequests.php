@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use App\Exceptions\AbuseException;
 use App\Helpers\ConsoleColour;
-use App\Redis;
+use App\Helpers\Redis;
 use App\Traits\StaticFileDetection;
 
 /**
