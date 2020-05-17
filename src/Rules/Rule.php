@@ -3,12 +3,12 @@
 namespace App\Rules;
 
 use App\Helpers\Log;
-use App\LogLine;
+use App\Logs\LogLine;
 
 /**
  * Class Rule
  *
- * @package App
+ * @package App\Rules
  */
 abstract class Rule
 {
