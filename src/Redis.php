@@ -24,8 +24,6 @@ class Redis
             $client = new \Redis();
 
             if (!$client->connect(Setting::get('Redis', 'Host'), Setting::get('Redis', 'Port'))) {
-                $client = false;
-
                 throw new \Exception('Failed to connect to Redis');
             }
 
