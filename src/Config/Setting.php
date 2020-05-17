@@ -10,8 +10,6 @@ namespace App\Config;
 class Setting
 {
 
-    const SETTING_FILE = 'settings.ini';
-
     /**
      * @param string $block
      * @param string $value
@@ -24,7 +22,15 @@ class Setting
 
         if ($settings === null) {
             $settings = [];
-            if ($tmpSettings = parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . static::SETTING_FILE, true)) {
+
+            $settingsFilePath = implode(DIRECTORY_SEPARATOR, [
+                __DIR__,
+                '..',
+                '..',
+                'settings.ini',
+            ]);
+
+            if ($tmpSettings = parse_ini_file($settingsFilePath, true)) {
                 $settings = $tmpSettings;
             }
         }
