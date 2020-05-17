@@ -40,7 +40,7 @@ class MicrosoftTeams implements NotificationInterface
                     [
                         'title' => '**' . $message . '**',
                         'facts' => $details,
-                    ]
+                    ],
                 ],
             ];
 
