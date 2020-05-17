@@ -14,9 +14,8 @@ class BlockMaliciousFileRequests extends Rule
 {
 
     /**
-     * List if URIs to block if they don't exist within your vhost.
-     * These URIs require an exact match (minus any query string!),
-     * but are compared case insensitively.
+     * List if URIs to block if they don't exist within your vhost. These URIs require an exact match (minus any query
+     * string!), but are compared case insensitively.
      */
     const BLOCK_URIS_IF_NOT_EXISTING = [
         '/login.php',
@@ -31,6 +30,7 @@ class BlockMaliciousFileRequests extends Rule
         '/phpmyadmin/scripts/setup.php',
         '/myadmin/scripts/setup.php',
         '/phpmyadmin/index.php',
+        '/sheep.php',
     ];
 
     /**
@@ -50,10 +50,22 @@ class BlockMaliciousFileRequests extends Rule
                 if ($this->webPathExists($relativePath)) {
                     // As this is actually a valid path within the vhost, we'll allow it
                     $this->log(sprintf(
-                        "Allowing attempt to access a malicious URI because it exists in the vhost: %s - %s",
+                        "Allowing attempt to access a malicious URI (%s) because it exists in the vhost from %s",
                         $this->logLine->getUrl(),
                         $this->logLine->getIp()
-                    ));
+                    ), ConsoleColour::TEXT_BLUE);
+
+                    return;
+                }
+
+                if ($this->logLine->getResponseCode() <= 400) {
+                    // As the web server responded with a seemingly valid response code, we'll allow it!
+                    $this->log(sprintf(
+                        "Allowing attempt to access a malicious URI (%s) because it got a %i response from %s",
+                        $this->logLine->getUrl(),
+                        $this->logLine->getResponseCode(),
+                        $this->logLine->getIp()
+                    ), ConsoleColour::TEXT_BLUE);
 
                     return;
                 }
