@@ -16,7 +16,7 @@ class Log
      */
     public static function write($message, $colour = null)
     {
-        if (!PRINT_OUTPUT) {
+        if (defined('PRINT_OUTPUT') && !PRINT_OUTPUT) {
             return;
         }
 
