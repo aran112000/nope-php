@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Config\Setting;
+
 /**
  * Class Log
  *
@@ -18,7 +20,7 @@ class Log
      */
     public static function write($message, $colour = null)
     {
-        if (defined('PRINT_OUTPUT') && !PRINT_OUTPUT) {
+        if (Setting::get('General', 'MuteConsoleOutput')) {
             return;
         }
 
