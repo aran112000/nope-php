@@ -15,7 +15,7 @@ class LogLine
      */
     private $logLine;
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $requestDetails;
     /**
@@ -55,7 +55,7 @@ class LogLine
      * */
     protected $queryString;
     /**
-     * @var array
+     * @var string[]
      * */
     protected $queryStringArray;
     /**
@@ -96,7 +96,7 @@ class LogLine
     protected $userAgent;
 
     /**
-     * @return array|bool
+     * @return mixed[]
      */
     protected function setRequestDetails()
     {
@@ -290,7 +290,7 @@ class LogLine
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getQueryStringArray()
     {
@@ -324,7 +324,7 @@ class LogLine
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getResponseCode()
     {
@@ -380,14 +380,14 @@ class LogLine
     public function getIpHost()
     {
         if ($this->ipHost === null) {
-            $this->ipHost = gethostbyaddr($this->getIp());
+            $this->ipHost = (string) gethostbyaddr($this->getIp());
         }
 
         return $this->ipHost;
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getBytesSent()
     {
@@ -432,6 +432,8 @@ class LogLine
 
     /**
      * @param string $logLine
+     *
+     * @return void
      */
     public function setLogLine($logLine)
     {
