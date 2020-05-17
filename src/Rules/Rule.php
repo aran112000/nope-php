@@ -25,8 +25,9 @@ abstract class Rule
     abstract public function run();
 
     /**
-     * @return void
      * @param LogLine $logLine
+     *
+     * @return void
      */
     public function setLogLine(LogLine $logLine)
     {
@@ -64,8 +65,8 @@ abstract class Rule
     }
 
     /**
-     * @param string       $message
-     * @param null|string  $colour   - Constant from App\ConsoleColour
+     * @param string      $message
+     * @param null|string $colour  Constant from App\ConsoleColour
      *
      * @return void
      */
