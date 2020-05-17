@@ -11,17 +11,9 @@ class IpAddress
 {
 
     /**
-     * Any IPs declared here won't ever be blocked, please consult with AR/CR
-     * before making ANY changes to the IPs contained here.
+     * Any IPs declared here won't EVER be blocked
      *
-     * These should cover all public and private IPs for our productions
-     * servers to ensure crons / cURL requests all continue to run as
-     * expected.
-     *
-     * No personal IPs should EVER be whitelisted here!
-     *
-     * Please ensure all IPs are maintained in their correctly named blocks,
-     * and any new blocks, should be named appropriately  for future reference
+     * @var string[][]
      */
     protected static $whitelistedIps = [
         'Localhost' => [
