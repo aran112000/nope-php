@@ -174,7 +174,7 @@ class Nope
      */
     public function __destruct()
     {
-        if ($this->logHandle !== null) {
+        if ($this->logHandle) {
             pclose($this->logHandle);
         }
     }
