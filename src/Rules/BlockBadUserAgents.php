@@ -14,12 +14,12 @@ class BlockBadUserAgents extends Rule
 {
 
     /**
-     * A list of bots to be blocked by this rule, these are
-     * matched case sensitively as a partial match so things like
-     * Googlebot will match a number of their variants (images, video,
-     * news...) for example.
+     * @var string[]
+     *
+     * A list of bots to be blocked by this rule, these are matched case sensitively as a partial match so things like
+     * Googlebot will match a number of their variants (images, video, news...) for example.
      */
-    const BLACKLISTED_BOTS = [
+    private $blacklistedBots = [
         // Common spam bots & scrapers
         'Java/',
         'python-requests/',
@@ -50,7 +50,7 @@ class BlockBadUserAgents extends Rule
     {
         $userAgent = $this->logLine->getUserAgent();
 
-        foreach (static::BLACKLISTED_BOTS as $bot) {
+        foreach ($this->blacklistedBots as $bot) {
             if (strstr($userAgent, $bot)) {
                 return $bot;
             }
