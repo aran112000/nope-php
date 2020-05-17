@@ -14,8 +14,10 @@ class MicrosoftTeams implements NotificationInterface
 
     /**
      * @param string      $message
-     * @param array       $keyValueDetails
+     * @param string[]    $keyValueDetails
      * @param string|null $url
+     *
+     * @return void
      */
     public function send($message, array $keyValueDetails = [], $url = null)
     {
@@ -66,15 +68,16 @@ class MicrosoftTeams implements NotificationInterface
             ];
         }
 
-        $ch = curl_init(Setting::get('MicrosoftTeams', 'WebhookURL'));
-        curl_setopt_array($ch, [
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_RETURNTRANSFER => false,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($messageBody),
-            CURLOPT_HTTPHEADER => ['Content-type: application/json'],
-        ]);
-        curl_exec($ch);
-        curl_close($ch);
+        if ($ch = curl_init(Setting::get('MicrosoftTeams', 'WebhookURL'))) {
+            curl_setopt_array($ch, [
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_RETURNTRANSFER => false,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode($messageBody),
+                CURLOPT_HTTPHEADER => ['Content-type: application/json'],
+            ]);
+            curl_exec($ch);
+            curl_close($ch);
+        }
     }
 }
