@@ -9,6 +9,8 @@ class UserAgent
      * are matched case insensitively as a partial match so things like
      * Googlebot will match a number of their variants (images, video,
      * news...) for example.
+     *
+     * @var string[][] $whitelistedUserAgents
      */
     protected static $whitelistedUserAgents = [
         'Google' => [
