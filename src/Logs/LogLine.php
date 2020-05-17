@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Logs;
 
 /**
  * Class LogLine
  *
- * @package App
+ * @package App\Logs
  */
 class LogLine
 {
