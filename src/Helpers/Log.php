@@ -13,6 +13,8 @@ class Log
     /**
      * @param string       $message
      * @param null|string  $colour   - Constant from \App\Helpers\ConsoleColour
+     *
+     * @return void
      */
     public static function write($message, $colour = null)
     {
