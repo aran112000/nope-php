@@ -14,7 +14,6 @@ use App\Traits\StaticFileDetection;
  */
 class RateLimitRequests extends Rule
 {
-
     use StaticFileDetection;
 
     /**
@@ -75,7 +74,10 @@ class RateLimitRequests extends Rule
 
         if ($this->ignoreAssetRequests && $assetType = $this->isStaticFile()) {
             // Ignoring IP as it's a request for an asset
-            $this->log('Ignoring request for ' . $assetType . ' (' . $this->logLine->getMimeType() . ') from ' . $this->logLine->getIp(), ConsoleColour::TEXT_GREEN);
+            $this->log(
+                "Ignoring request for $assetType ({$this->logLine->getMimeType()}) from {$this->logLine->getIp()}",
+                ConsoleColour::TEXT_GREEN
+            );
 
             return;
         }
@@ -84,6 +86,8 @@ class RateLimitRequests extends Rule
     }
 
     /**
+     * @return void
+     *
      * @throws \App\Exceptions\AbuseException
      */
     protected function logRequestAndBlockIfAbuseDetected()
@@ -117,10 +121,10 @@ class RateLimitRequests extends Rule
         // Blocks are based on exceeding an average of the current and look back periods
         $highestRequestCountLastTwoPeriods = max($previousPeriodRequestCount, $currentPeriodRequestCount);
 
-        $this->log($this->logLine->getIp() . ' request peak: ' . $highestRequestCountLastTwoPeriods . ' - ' . $this->logLine->getDomain());
+        $this->log("{$this->logLine->getIp()} request peak: $highestRequestCountLastTwoPeriods - {$this->logLine->getDomain()}");
 
         if ($highestRequestCountLastTwoPeriods > $this->getMaxRequestsInPeriod()) {
-            $message = $this->logLine->getIp() . ' exceeded the threshold of ' . $this->getMaxRequestsInPeriod() . ' requests within ' . $this->getPeriodDurationSeconds() . ' seconds - ' . $this->logLine->getHost();
+            $message = "{$this->logLine->getIp()} exceeded the threshold of {$this->getMaxRequestsInPeriod()} requests within {$this->getPeriodDurationSeconds()} seconds - {$this->logLine->getHost()}";
 
             $this->log($message, ConsoleColour::TEXT_RED);
 
