@@ -19,79 +19,79 @@ class LogLine
      */
     protected $requestDetails;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $requestTime;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $url;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $method;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $protocol;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $host;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $domain;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $uri;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $uriNoQueryString;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $queryString;
     /**
-     * @var array|false
+     * @var array
      * */
     protected $queryStringArray;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $contentType;
     /**
-     * @var int|false
+     * @var int
      * */
     protected $responseCode;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $ipRaw;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $xForwardFor;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $ip;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $ipHost;
     /**
-     * @var int|false
+     * @var int
      * */
     protected $bytesSent;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $referrer;
     /**
-     * @var string|false
+     * @var string
      * */
     protected $userAgent;
 
@@ -101,26 +101,26 @@ class LogLine
     protected function setRequestDetails()
     {
         if ($this->requestDetails === null) {
-            $this->requestDetails = false;
+            $this->requestDetails = [];
 
-            $this->requestTime = false;
-            $this->url = false;
-            $this->method = false;
-            $this->protocol = false;
-            $this->host = false;
-            $this->domain = false;
-            $this->uri = false;
-            $this->uriNoQueryString = false;
-            $this->queryString = false;
-            $this->queryStringArray = false;
-            $this->contentType = false;
-            $this->responseCode = false;
-            $this->ipRaw = false;
-            $this->xForwardFor = false;
-            $this->ip = false;
-            $this->bytesSent = false;
-            $this->referrer = false;
-            $this->userAgent = false;
+            $this->requestTime = '';
+            $this->url = '';
+            $this->method = '';
+            $this->protocol = '';
+            $this->host = '';
+            $this->domain = '';
+            $this->uri = '';
+            $this->uriNoQueryString = '';
+            $this->queryString = '';
+            $this->queryStringArray = [];
+            $this->contentType = '';
+            $this->responseCode = 0;
+            $this->ipRaw = '';
+            $this->xForwardFor = '';
+            $this->ip = '';
+            $this->bytesSent = 0;
+            $this->referrer = '';
+            $this->userAgent = '';
 
             if (preg_match('#\[(?<time>.*?)]\s+(?<method>GET|HEAD|POST|PATCH|PUT|DELETE)\s+(?<protocol>https?)://(?<host>.*?)(?<uri>/.*?)\s+"(?<protocol_uri>.*?)"\s+"(?<response_code>.*?)"\s+"(?<x_forward_for>.*?)"\s+"(?<remote_addr>.*?)"\s+"(?<remote_user>.*?)"\s+"(?<bytes_sent>.*?)"\s+"(?<referrer>.*?)"\s+"(?<user_agent>.*?)"\s+"(?<content_type>.*?)"#i', $this->getLogLine(), $matches)) {
 
@@ -137,24 +137,24 @@ class LogLine
                 list($contentType) = explode(';', trim(strtolower($matches['content_type'])));
 
                 $this->requestDetails = [
-                    'request_time' => trim($matches['time']),
-                    'url' => trim($matches['protocol']) . '://' . trim($matches['host']) . (isset($matches['uri']) ? trim($matches['uri']) : ''),
-                    'method' => trim(strtoupper($matches['method'])),
-                    'protocol' => trim(strtoupper($matches['protocol'])),
-                    'host' => trim($matches['host']),
-                    'domain' => trim(str_replace('www.', '', $matches['host'])),
-                    'uri' => trim($matches['uri']),
+                    'request_time' => $matches['time'],
+                    'url' => "{$matches['protocol']}://{$matches['host']}{$matches['uri']}",
+                    'method' => strtoupper($matches['method']),
+                    'protocol' => strtoupper($matches['protocol']),
+                    'host' => $matches['host'],
+                    'domain' => str_replace('www.', '', $matches['host']),
+                    'uri' => $matches['uri'],
                     'uri_no_query_string' => $uriNoQueryString,
                     'query_string' => $queryString,
                     'query_string_array' => $queryStringArray,
                     'content_type' => $contentType,
                     'response_code' => (int) $matches['response_code'],
                     'ip_raw' => $matches['remote_addr'],
-                    'x_forward_for' => (!empty($matches['x_forward_for']) && $matches['x_forward_for'] !== '-' ? $matches['x_forward_for'] : ''),
-                    'ip' => (!empty($matches['x_forward_for'] && $matches['x_forward_for'] !== '-') ? $matches['x_forward_for'] : $matches['remote_addr']),
+                    'x_forward_for' => ($matches['x_forward_for'] !== '-' ? $matches['x_forward_for'] : ''),
+                    'ip' => ($matches['x_forward_for'] !== '-' ? $matches['x_forward_for'] : $matches['remote_addr']),
                     'bytes_sent' => (int) $matches['bytes_sent'],
-                    'referrer' => (!empty($matches['referrer']) && $matches['referrer'] !== '-' ? $matches['referrer'] : ''),
-                    'user_agent' => (!empty($matches['user_agent']) && $matches['user_agent'] !== '-' ? $matches['user_agent'] : ''),
+                    'referrer' => ($matches['referrer'] !== '-' ? $matches['referrer'] : ''),
+                    'user_agent' => ($matches['user_agent'] !== '-' ? $matches['user_agent'] : ''),
                 ];
 
                 $this->requestTime = $this->requestDetails['request_time'];
@@ -182,7 +182,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getRequestTime()
     {
@@ -194,7 +194,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getUrl()
     {
@@ -206,7 +206,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getMethod()
     {
@@ -218,7 +218,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getProtocol()
     {
@@ -230,7 +230,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getHost()
     {
@@ -242,7 +242,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getDomain()
     {
@@ -254,7 +254,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getUri()
     {
@@ -266,7 +266,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getUriNoQueryString()
     {
@@ -278,7 +278,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getQueryString()
     {
@@ -290,7 +290,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return array
      */
     public function getQueryStringArray()
     {
@@ -302,7 +302,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getContentType()
     {
@@ -316,7 +316,7 @@ class LogLine
     /**
      * Alias of getContentType
      *
-     * @return string|false
+     * @return string
      */
     public function getMimeType()
     {
@@ -324,7 +324,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getResponseCode()
     {
@@ -336,7 +336,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getIpRaw()
     {
@@ -348,7 +348,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getXForwardFor()
     {
@@ -360,7 +360,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getIp()
     {
@@ -375,7 +375,7 @@ class LogLine
      * Set lazy unlike other properties to avoid the overhead of the reverse DNS
      * lookup unless it's actually needed for a rule
      *
-     * @return string|false
+     * @return string
      */
     public function getIpHost()
     {
@@ -387,7 +387,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getBytesSent()
     {
@@ -399,7 +399,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getReferrer()
     {
@@ -411,7 +411,7 @@ class LogLine
     }
 
     /**
-     * @return string|false
+     * @return string
      */
     public function getUserAgent()
     {
